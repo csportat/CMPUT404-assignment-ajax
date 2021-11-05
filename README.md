@@ -8,6 +8,11 @@ Collaborators are listed below, if there is any:
 
 Jiaxin Wang (jiaxin13) \
 
+Digital images quoted within this project: 
+
+Ethan's sprite from Pokemon (TM) Gold and Silver; file: Spr_GS_Ethan.png ( https://bulbapedia.bulbagarden.net/wiki/File:Spr_GS_Ethan.png ) \
+Ecruteak City, Promotional artwork by Midori Harada for HeartGold and SoulSilver; File: Ecruteak_City_Landscape.png ( https://bulbapedia.bulbagarden.net/wiki/File:Ecruteak_City_Landscape.png ) \
+
 Following are the content from the original README.md from https://github.com/csportat/CMPUT404-assignment-ajax 
 
 CMPUT404-assignment-ajax

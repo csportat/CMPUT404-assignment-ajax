@@ -40,6 +40,10 @@ function sendJSONXMLHTTPRequest(url, objects, callback) {
                 if (xhr.status==200) {
                     //XXX: parse some JSON from the request!
                     //XXX: Pass the data to the callback!
+                    let json_data = xhr.response;
+                    let json_object = JSON.parse(json_data);
+                    if (!objects) {world = json_object;}
+                    callback();
                 }
             } 
             catch(e) {
@@ -50,12 +54,27 @@ function sendJSONXMLHTTPRequest(url, objects, callback) {
     //XXX: POST to a URL
     //XXX: set the mimetype and the accept headers!
     // Remember to use application/json !
+    if (objects) {
+        xhr.open('POST', url);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.send( JSON.stringify(objects) );
+    } else {
+        xhr.open('GET', url);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.send( JSON.stringify(objects) )
+    }
 }
 
 
 world = {};
 
 //XXX: TODO Make this prettier!
+var icon = document.createElement('img');
+icon.src = 'https://cdn2.bulbagarden.net/upload/3/31/Spr_GS_Ethan.png';
+var pic_back = document.createElement('img');
+pic_back.src = 'https://cdn2.bulbagarden.net/upload/archive/a/a4/20100701221703%21Ecruteak_City_Landscape.png';
+
+// Function ID stays but actually draw icons 
 function drawCircle(context,entity) {
     with(context) {
         beginPath();              
@@ -63,19 +82,26 @@ function drawCircle(context,entity) {
         var x = entity["x"];
         var y = entity["y"];
         //moveTo(x,y);
-        fillStyle = entity["colour"];
-        strokeStyle = fillStyle;
-        arc(x, y, (entity["radius"])?entity["radius"]:50, 0, 2.0 * Math.PI, false);  
+        //fillStyle = entity["colour"];
+        //strokeStyle = fillStyle;
+        //arc(x, y, (entity["radius"])?entity["radius"]:50, 0, 2.0 * Math.PI, false);
+        drawImage(icon, x, y, entity['width'], entity['height']);
         stroke();                                
     }
 }
 
 function prepEntity(entity) {
-    if (!entity["colour"]) {
-        entity["colour"] = "#FF0000";
+    // if (!entity["colour"]) {
+    //     entity["colour"] = "#FF0000";
+    // }
+    // if (!entity["radius"]) {
+    //     entity["radius"] = 50;
+    // }
+    if (!entity['width']) {
+        entity['width'] = 56;
     }
-    if (!entity["radius"]) {
-        entity["radius"] = 50;
+    if (!entity['height']) {
+        entity['height'] = 56;
     }
     return entity;
 }
@@ -83,8 +109,9 @@ function prepEntity(entity) {
 function clearFrame() {
     with(context) {
 	moveTo(0,0);
-	fillStyle = "#000";
-	fillRect(0,0,W,H);
+	//fillStyle = "#000";
+	//fillRect(0,0,W,H);
+    drawImage(pic_back, 0, 0, W, H);
     }
 
 }
@@ -136,9 +163,10 @@ function getPosition(e) {
 
 function addEntity(entity, data) {
     world[entity] = data;
-    drawNextFrame(); // (but should we?)
+    //drawNextFrame(); // (but should we?)
     //XXX: Send a XHTML Request that updates the entity you just  modified!
-
+    path = '/entity/' + entity;
+    sendJSONXMLHTTPRequest(path, data, renderFrame);
 }
 
 var counter = 0;
@@ -262,6 +290,8 @@ mouse.mousedraggers.push(function(x,y,clicked,e) {
 
 function update() {
     //XXX: TODO Get the world from the webservice using a XMLHTTPRequest
+    path = '/world';
+    sendJSONXMLHTTPRequest(path, null, renderFrame);
     drawFrame();
 }
 
